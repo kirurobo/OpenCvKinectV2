@@ -26,6 +26,11 @@ namespace OpenCvKinectV2
         Mat colorImage;
 
         /// <summary>
+        /// 出力用に処理した画像
+        /// </summary>
+        Mat colorOutputImage;
+
+        /// <summary>
         /// PictureBoxで表示するビットマップ
         /// </summary>
         Bitmap colorBitmap;
@@ -84,8 +89,11 @@ namespace OpenCvKinectV2
                 );
             this.colorImage.SetTo(Scalar.All(255)); // 画像全体を白色に塗りつぶし
 
+            // 同じサイズ・深度で出力用画像も準備
+            this.colorOutputImage = this.colorImage.Clone();
+
             // カラー画像Bitmapの作成とPictureBoxへの割り当て
-            this.colorBitmap = this.colorImage.ToBitmap();
+            this.colorBitmap = this.colorOutputImage.ToBitmap();
             this.pictureBoxColorFrame.Image = this.colorBitmap;
         }
 
@@ -121,8 +129,13 @@ namespace OpenCvKinectV2
         /// </summary>
         private void DrawColorImage()
         {
+            // RGBそれぞれでの閾値処理
+            Cv2.Threshold(this.colorImage, this.colorOutputImage, 127.0, 255.0, ThresholdTypes.Binary);
+            //// 次のような書き方もできるが、メモリを消費してしまう
+            //this.colorOutputImage = this.colorImage.Threshold(127.0, 255.0, ThresholdTypes.Binary);
+
             // 画像からビットマップに上書き
-            this.colorImage.ToBitmap(this.colorBitmap);
+            this.colorOutputImage.ToBitmap(this.colorBitmap);
 
             // PictureBoxの描画を要求
             this.pictureBoxColorFrame.Invalidate();
