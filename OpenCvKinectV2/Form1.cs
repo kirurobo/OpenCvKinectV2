@@ -26,12 +26,12 @@ namespace OpenCvKinectV2
         Mat colorImage;
 
         /// <summary>
-        /// 出力用に処理した画像
+        /// 出力用に処理後の画像
         /// </summary>
         Mat colorOutputImage;
 
         /// <summary>
-        /// PictureBoxで表示するビットマップ
+        /// PictureBoxで表示するBitmap
         /// </summary>
         Bitmap colorBitmap;
 
@@ -65,17 +65,6 @@ namespace OpenCvKinectV2
         }
 
         /// <summary>
-        /// ウィンドウが閉じられたときの処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            // Kinect利用終了
-            this.kinect.Close();
-        }
-
-        /// <summary>
         /// 画像を新規作成
         /// </summary>
         private void InitializeImage()
@@ -87,13 +76,15 @@ namespace OpenCvKinectV2
                 colorFrameDescription.Width,
                 MatType.CV_8UC4                     // 8ビット×4チャンネル分
                 );
-            this.colorImage.SetTo(Scalar.All(255)); // 画像全体を白色に塗りつぶし
+            this.colorImage.SetTo(Scalar.All(255)); // 最初は画像全体を白色に塗りつぶし
 
-            // 同じサイズ・深度で出力用画像も準備
+            // 同じサイズ・深度で出力用画像を作成
             this.colorOutputImage = this.colorImage.Clone();
 
-            // カラー画像Bitmapの作成とPictureBoxへの割り当て
+            // カラー画像Bitmapの作成
             this.colorBitmap = this.colorOutputImage.ToBitmap();
+
+            // PictureBoxへBitmapを割り当て
             this.pictureBoxColorFrame.Image = this.colorBitmap;
         }
 
@@ -118,27 +109,38 @@ namespace OpenCvKinectV2
                         ColorImageFormat.Bgra   // RGBでなくBGRAの順番
                         );
 
-                    // カラー画像からPictureBoxへの描画
-                    DrawColorImage();
+                    // これでOpenCVでの画像処理ができる
+                    // （例としてRGBごとの閾値処理）
+                    Cv2.Threshold(this.colorImage, this.colorOutputImage, 127.0, 255.0, ThresholdTypes.Binary);
+
+                    // PictureBoxへ描画
+                    UpdatePictureBox(this.colorOutputImage);
                 }
             }
         }
 
         /// <summary>
-        /// PictureBoxに表示させる
+        /// PictureBoxの表示を更新
+        /// <param name="image">表示画像。colorBitmapと同じサイズ・色深度でなければならない</param>
         /// </summary>
-        private void DrawColorImage()
+        private void UpdatePictureBox(Mat image)
         {
-            // RGBそれぞれでの閾値処理
-            Cv2.Threshold(this.colorImage, this.colorOutputImage, 127.0, 255.0, ThresholdTypes.Binary);
-            //// 次のような書き方もできるが、メモリを消費してしまう
-            //this.colorOutputImage = this.colorImage.Threshold(127.0, 255.0, ThresholdTypes.Binary);
-
-            // 画像からビットマップに上書き
-            this.colorOutputImage.ToBitmap(this.colorBitmap);
+            // 指定された画像でBitmapを更新
+            image.ToBitmap(this.colorBitmap);
 
             // PictureBoxの描画を要求
             this.pictureBoxColorFrame.Invalidate();
+        }
+
+        /// <summary>
+        /// ウィンドウが閉じられたときの処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // Kinect利用終了
+            this.kinect.Close();
         }
     }
 }
