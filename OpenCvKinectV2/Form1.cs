@@ -79,7 +79,7 @@ namespace OpenCvKinectV2
             this.colorBitmap = this.colorOutputImage.ToBitmap();
 
             // PictureBoxへBitmapを割り当て
-            this.pictureBoxColorFrame.Image = this.colorBitmap;
+            this.pictureBox1.Image = this.colorBitmap;
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace OpenCvKinectV2
             image.ToBitmap(this.colorBitmap);
 
             // PictureBoxの描画を要求
-            this.pictureBoxColorFrame.Invalidate();
+            this.pictureBox1.Invalidate();
         }
 
         /// <summary>

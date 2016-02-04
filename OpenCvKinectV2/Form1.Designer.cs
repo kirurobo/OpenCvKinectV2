@@ -28,38 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBoxColorFrame = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxColorFrame)).BeginInit();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBoxColorFrame
+            // pictureBox1
             // 
-            this.pictureBoxColorFrame.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxColorFrame.Location = new System.Drawing.Point(0, 0);
-            this.pictureBoxColorFrame.Name = "pictureBoxColorFrame";
-            this.pictureBoxColorFrame.Size = new System.Drawing.Size(624, 321);
-            this.pictureBoxColorFrame.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxColorFrame.TabIndex = 0;
-            this.pictureBoxColorFrame.TabStop = false;
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(624, 321);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 321);
-            this.Controls.Add(this.pictureBoxColorFrame);
+            this.Controls.Add(this.pictureBox1);
             this.Name = "Form1";
             this.Text = "OpenCvSharp3 & Kinect v2";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxColorFrame)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBoxColorFrame;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
