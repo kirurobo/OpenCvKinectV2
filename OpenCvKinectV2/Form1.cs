@@ -90,7 +90,7 @@ namespace OpenCvKinectV2
             // 同じサイズ・深度で出力用画像を作成
             this.colorOutputImage = this.colorImage.Clone();
 
-            // カラー画像Bitmapの作成とPictureBosへの割り当て
+            // カラー画像Bitmapの作成とPictureBoxへの割り当て
             this.colorBitmap = this.colorOutputImage.ToBitmap();
             this.pictureBoxColor.Image = this.colorBitmap;
 
@@ -100,7 +100,7 @@ namespace OpenCvKinectV2
             this.depthImage = new Mat(
                 depthFrameDescription.Height,
                 depthFrameDescription.Width,
-                MatType.CV_16UC1                     // 16ビット×1チャンネル
+                MatType.CV_16UC1                     // Kinectの深度画像は16ビット×1チャンネル
                 );
             this.depthImage.SetTo(Scalar.All(0));    // 画像全体を黒（ゼロ）に塗りつぶし
 
@@ -155,7 +155,7 @@ namespace OpenCvKinectV2
                     // OpenCVの画像にKinectの深度画像を複製
                     depthFrame.CopyFrameDataToIntPtr(
                         this.depthImage.Data,
-                        (uint)(this.depthImage.Total() * this.depthImage.ElemSize())
+                        (uint)(this.depthImage.Total() * this.depthImage.ElemSize())   // 全画素数 × 一画素のバイト数
                         );
 
                     // 0mm～8000mmの16ビット深度画像を256階調に変換
