@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Microsoft.Kinect;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
+using System.Collections.Generic;
 
 namespace OpenCvKinectV2
 {
@@ -117,6 +118,113 @@ namespace OpenCvKinectV2
             this.pictureBoxDepth.Image = this.depthBitmap;
         }
 
+
+        /// <summary>
+        /// 深度→カラー画像のマップをクリップボードにコピー
+        /// </summary>
+        private void CopyDepathToColorSpaceMap()
+        {
+            //string text = "dx\tdy\tdz\tcx\tcy" + Environment.NewLine;
+            string text = "";
+
+            for (ushort depth = 4000; depth <= 5000; depth += 1000)
+            {
+                string header = "dy\t";
+                List<string> tableX = new List<string>();
+                List<string> tableY = new List<string>();
+                int index = 0;
+
+                for (int row = 0; row < this.depthImage.Height; row += 10)
+                {
+                    tableX.Add(row + "\t");
+                    tableY.Add(row + "\t");
+
+                    for (int col = 0; col < this.depthImage.Width; col += 10)
+                    {
+                        if (row <= 0) header += col + "\t";
+
+                        DepthSpacePoint point = new DepthSpacePoint();
+                        point.X = col;
+                        point.Y = row;
+
+                        ColorSpacePoint outPoint;
+                        outPoint = this.kinect.CoordinateMapper.MapDepthPointToColorSpace(
+                            point,
+                            depth
+                            );
+
+                        tableX[index] += outPoint.X + "\t";
+                        tableY[index] += outPoint.Y + "\t";
+
+                        //text += point.X + "\t" + point.Y + "\t" + depth + "\t"
+                        //    + outPoint.X + "\t" + outPoint.Y + Environment.NewLine;
+                    }
+
+                    index++;
+                }
+
+                // 文字列生成
+                text += header + "\t" + header + Environment.NewLine;
+                for (int i = 0; i < index; i++)
+                {
+                    text += tableX[i] + "\t" + tableY[i] + Environment.NewLine;
+                }
+                text += Environment.NewLine;
+            }
+            Clipboard.SetText(text);
+        }
+
+
+        /// <summary>
+        /// 深度→カラー画像のマップをクリップボードにコピー
+        /// </summary>
+        private void CopyBodyToColorSpaceMap()
+        {
+            string text = "";
+
+            for (float depth = 6.0f; depth <= 6.0f; depth += 1.0f)
+            {
+                string header = "dy\t";
+                List<string> tableX = new List<string>();
+                List<string> tableY = new List<string>();
+                int index = 0;
+
+                for (float y = -1.0f; y < 1.0f; y += 0.1f)
+                {
+                    tableX.Add(y + "\t");
+                    tableY.Add(y + "\t");
+
+                    float startx = -1.0f;
+                    for (float x = startx; x < 1.0f; x += 0.1f)
+                    {
+                        if (y == startx) header += x + "\t";
+
+                        CameraSpacePoint point = new CameraSpacePoint();
+                        point.X = x;
+                        point.Y = y;
+                        point.Z = depth;
+
+                        ColorSpacePoint outPoint;
+                        outPoint = this.kinect.CoordinateMapper.MapCameraPointToColorSpace(point);
+
+                        tableX[index] += (float.IsInfinity(outPoint.X) ? "" : outPoint.X.ToString()) + "\t";
+                        tableY[index] += (float.IsInfinity(outPoint.Y) ? "" : outPoint.Y.ToString()) + "\t";
+                    }
+
+                    index++;
+                }
+
+                // 文字列生成
+                text += depth + Environment.NewLine + header + "\t" + header + Environment.NewLine;
+                for (int i = 0; i < index; i++)
+                {
+                    text += tableX[i] + "\t" + tableY[i] + Environment.NewLine;
+                }
+                text += Environment.NewLine;
+            }
+            Clipboard.SetText(text);
+        }
+
         /// <summary>
         /// Kinectのデータ取得時に呼ばれる処理
         /// </summary>
@@ -201,6 +309,10 @@ namespace OpenCvKinectV2
         /// <param name="e"></param>
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
+            // 座標系変換結果をクリップボードにコピー
+            //CopyDepathToColorSpaceMap();
+            CopyBodyToColorSpaceMap();
+
             // Kinect利用終了
             this.kinect.Close();
         }
